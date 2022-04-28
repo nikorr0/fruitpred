@@ -19,7 +19,7 @@ from django.urls import re_path
 from firstapp import views
 
 urlpatterns = [
-    re_path(r'^predict', views.predict),
+    re_path(r'^result', views.result),
     path('', views.index, name='home'),
     path('admin/', admin.site.urls),
 ]

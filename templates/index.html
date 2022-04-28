@@ -5,6 +5,11 @@
     <title>Прогнозирование</title>
 </head>
 <body>
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
 	<h2 style="text-align: center;">Прогнозирование свежести фрукта по фотографии</h2>
 	{% block content %}
 		<p style="font-size: 1.5em; text-align: center;">Вставьте изображение</p>
@@ -15,6 +20,9 @@
 			<p style="font-size: 1.5em; text-align: center;"><input type="submit" value="Предсказать"></p>
 		</form>
 	{% endblock %}
+	<img style="width: 256px; height: 256px;"
+	alt="Image description"
+ 	src="{% static 'apple_saved.jpg' %}"/>
 
 </body>
 </html>
