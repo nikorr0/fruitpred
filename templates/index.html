@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
     <meta charset="utf-8" />
+	<link rel="stylesheet" href="{% static "css/styles.css" %}" />
     <title>Прогнозирование</title>
 </head>
 <body>
@@ -14,7 +16,20 @@
 			<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
 			<p style="font-size: 1.5em; text-align: center;"><input type="submit" value="Предсказать"></p>
 		</form>
+		{% if image == "False" %}
+			<p style="font-size: 1.5em; text-align: center;">Ошибка, вставьте корректное изображение</p>
+		{% endif %}
+
 	{% endblock %}
+<<<<<<< Updated upstream
+=======
+
+	{% if image != "None" and image != "False" %}
+		<center><img alt="Загруженная фотография:" src="{% static image %}" ></center>
+	{% endif %}
+
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+>>>>>>> Stashed changes
 
 </body>
 </html>
