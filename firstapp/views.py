@@ -1,16 +1,6 @@
 from distutils.command.upload import upload
 from django.shortcuts import render
 from django.http import HttpResponse
-<<<<<<< Updated upstream
-#from .forms import UploadFileForm
-
-def index(request):
-    #output = "<h2>Прогнозирование свежести фрукта по фотографии</h2>"
-    #return HttpResponse(output)
-    #if request.method == "POST":
-        #form = UploadFileForm(request.POST, request.FILES)
-    return render(request, "index.html")
-=======
 from django.core.files.storage import default_storage
 # import cv2
 supported_formats = [".png", ".jpg", "jpeg"]
@@ -52,11 +42,12 @@ def index(request):
 
 
     return render(request, "index.html", context=data)
->>>>>>> Stashed changes
 
-def predict(request):
+
+def result(request):
     output = "<h2>Предсказать</h2>"
     return HttpResponse(output)
 
 
-#https://learndjango.com/tutorials/django-file-and-image-uploads-tutorial
+# https://learndjango.com/tutorials/django-file-and-image-uploads-tutorial
+# https://www.learningaboutelectronics.com/Articles/How-to-display-an-image-in-Django.php
