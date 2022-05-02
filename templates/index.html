@@ -11,24 +11,58 @@
 	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
 	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
 	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+
 	<h2 style="text-align: center;">Прогнозирование свежести фрукта по фотографии</h2>
 	{% block content %}
-		<p style="font-size: 1.5em; text-align: center;">Вставьте изображение</p>
+		<p style="font-size: 1.5em; text-align: center;">Вставьте изображение:</p>
 		<form enctype="multipart/form-data" method="post">
 			{% csrf_token %}
 			<p style="font-size: 1.5em; text-align: center;"><input type="file" name="photo"></p>
-			<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
 			<p style="font-size: 1.5em; text-align: center;"><input type="submit" value="Предсказать"></p>
 		</form>
 		{% if image == "False" %}
-			<p style="font-size: 1.5em; text-align: center;">Ошибка, вставьте корректное изображение</p>
+			<p style="font-size: 1.5em; text-align: center;">Ошибка, вставьте корректное изображение.</p>
+		{% endif %}
+
+		{% if image == "NotFound" %}
+			<p style="font-size: 1.5em; text-align: center;">Ошибка, на изображении не найдены подходящие фрукты (яблоко, банан, апельсин).</p>
 		{% endif %}
 
 	{% endblock %}
 
-	{% if image != "None" and image != "False" %}
+	{% if image != "None" and image != "False" and image != "NotFound" %}
 		<center><img alt="Загруженная фотография:" src="{% static image %}" ></center>
+		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+		<center><img alt="Нахождение объектов:" src="{% static image_with_detection %}" ></center>
+		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+		<center><img alt="Только объект:" src="{% static crop_image %}" ></center>
+
+		<center><table class="table table-bordered " border="1">
+			<tr>
+				<th>Фрукт</th>
+				<th>Предсказание</th>
+			</tr>
+			{% for i, n in fruit_predictions %}
+				<tr>
+					<td>{{i}}</td>
+					<td>{{n}}</td>
+				</tr>
+			{% endfor %}</table></center>
+	
+		<center><table class="table table-bordered " border="1">
+			<tr>
+				<th>Свежесть</th>
+				<th>Предсказание</th>
+			</tr>
+			{% for i, n in freshness_predictions %}
+				<tr>
+					<td>{{i}}</td>
+					<td>{{n}}</td>
+				</tr>
+			{% endfor %}</table></center>
+
+
+
 	{% endif %}
 
 	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
