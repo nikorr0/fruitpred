@@ -65,7 +65,7 @@ def loadmodels():
   print(f'Done! OD model loaded in {round(elapsed_time, 1)} seconds.')
 
   #3classes
-  print('Loading 3clases model...')
+  print('Loading 3classes model...')
   start_time = time.time()
 
   global modelConcat
@@ -78,7 +78,7 @@ def loadmodels():
   elapsed_time = end_time - start_time
   print(f'Done! 3classes model loaded in {round(elapsed_time, 1)} seconds.')
   #2classes
-  print('Loading 2clases model...')
+  print('Loading 2classes model...')
   start_time = time.time()
   
   global modelLayers

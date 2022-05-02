@@ -26,14 +26,19 @@ SECRET_KEY = 'django-insecure-nju)28z=qee)$+9c8*z7%&=nh-a8sz$7+a7)1l(+%l5p=yves@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+ALLOWED_HOSTS = ['*'] #['http://*.*.ngrok.io', 'https://*.*.ngrok.io', 'https://*.127.0.0.1']
+
+CSRF_TRUSTED_ORIGINS = ['https://*.*.ngrok.io','https://*.127.0.0.1', 'http://*.*.ngrok.io', 'http://*.127.0.0.1']
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 MODELS_DIR = os.path.join(BASE_DIR, "firstapp/models")
 
-#STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]

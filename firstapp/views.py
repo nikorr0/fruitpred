@@ -4,10 +4,12 @@ import cv2
 import os
 from fruitpred.settings import BASE_DIR
 from . import predict as pr
+from django.views.decorators.csrf import csrf_protect
 
 supported_formats = ["png", "jpg"]
 pr.loadmodels()
 
+@csrf_protect
 def index(request):
 
     if request.method == 'POST':
