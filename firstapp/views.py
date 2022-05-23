@@ -5,9 +5,10 @@ import os
 from fruitpred.settings import BASE_DIR
 from . import predict as pr
 from django.views.decorators.csrf import csrf_protect
+import numpy as np
 
 supported_formats = ["png", "jpg"]
-pr.loadmodels()
+pr.loadmodels(0)
 
 @csrf_protect
 def index(request):
@@ -57,12 +58,31 @@ def index(request):
 
         fruit_predictions = pr.Predfruitfreshness.predfruit(crop_image)
         freshness_predictions = pr.Predfruitfreshness.predfreshness(crop_image)
+            
+        height, width, color = image_with_detection.shape #reverse?
+        #print(width)
+        #print(height)
+        k = round(width / height, 4)
+        print(k)
+        #height = image_with_detection.shape()[1]
+
+        if k > 1.15:
+            width_edit, height_edit = 640, 360
+
+        if k < 0.9:
+            width_edit, height_edit = 256, 410
+        
+        if (k >= 0.9) and (k <= 1.15):
+            width_edit, height_edit = 400, 400
+
 
         data = {"image": os.path.join(IMAGES_DIR, "image_saved.jpg"), 
         "image_with_detection": IMAGE_W_DETECT_DIR, 
         "crop_image": IMAGE_CROP_DIR, 
         "fruit_predictions": fruit_predictions.items(), 
-        "freshness_predictions": freshness_predictions.items()}
+        "freshness_predictions": freshness_predictions.items(),
+        "width_edit": width_edit,
+        "height_edit": height_edit}
 
 
     

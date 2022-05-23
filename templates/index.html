@@ -5,67 +5,86 @@
     <meta charset="utf-8" />
 	<link rel="stylesheet" href="{% static "css/styles.css" %}" />
     <title>Прогнозирование</title>
+
+	<style>
+	   .layer1 {
+		position: relative; /* Относительное позиционирование */
+		background: #f0f0f0; /* Цвет фона */
+		height: 200px; /* Высота блока */
+	   }
+	   .layer2 {
+		position: absolute; /* Абсолютное позиционирование */
+		bottom: 15px; /* Положение от нижнего края */
+		right: 15px; /* Положение от правого края */
+		line-height: 1px;
+	   }
+  </style>
+
 </head>
 <body>
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-
-	<h2 style="text-align: center;">Прогнозирование свежести фрукта по фотографии</h2>
-	{% block content %}
-		<p style="font-size: 1.5em; text-align: center;">Вставьте изображение:</p>
-		<form enctype="multipart/form-data" method="post">
-			{% csrf_token %}
-			<p style="font-size: 1.5em; text-align: center;"><input type="file" name="photo"></p>
-			<p style="font-size: 1.5em; text-align: center;"><input type="submit" value="Предсказать"></p>
-		</form>
-		{% if image == "False" %}
-			<p style="font-size: 1.5em; text-align: center;">Ошибка, вставьте корректное изображение.</p>
-		{% endif %}
-
-		{% if image == "NotFound" %}
-			<p style="font-size: 1.5em; text-align: center;">Ошибка, на изображении не найдены подходящие фрукты (яблоко, банан, апельсин).</p>
-		{% endif %}
-
-	{% endblock %}
-
-	{% if image != "None" and image != "False" and image != "NotFound" %}
-		<center><img alt="Загруженная фотография:" src="{% static image %}" ></center>
+	<div>
 		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-		<center><img alt="Нахождение объектов:" src="{% static image_with_detection %}" ></center>
+
+		<h2 style="text-align: center;">Прогнозирование свежести фрукта по фотографии</h2>
+		{% block content %}
+			<p style="font-size: 1.5em; text-align: center;">Вставьте изображение:</p>
+			<form enctype="multipart/form-data" method="post">
+				{% csrf_token %}
+				<p style="font-size: 1.5em; text-align: center;"><input type="file" name="photo"></p>
+				<p style="font-size: 1.5em; text-align: center;"><input type="submit" value="Предсказать"></p>
+			</form>
+			{% if image == "False" %}
+				<p style="font-size: 1.5em; text-align: center;">Ошибка, вставьте корректное изображение.</p>
+			{% endif %}
+
+			{% if image == "NotFound" %}
+				<p style="font-size: 1.5em; text-align: center;">Ошибка, на изображении не найдены подходящие фрукты (яблоко, банан, апельсин).</p>
+			{% endif %}
+
+		{% endblock %}
+	</div>
+
+	<div style="display: flex;flex-wrap: nowrap;justify-content: center;">
+		{% if image != "None" and image != "False" and image != "NotFound" %}
+			<center><img alt="Загруженная фотография:" src="{% static image %}" width={{width_edit}} height={{height_edit}}></center>
+			<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+			<center><img alt="Нахождение объектов:" src="{% static image_with_detection %}" width={{width_edit}} height={{height_edit}}></center>
+			<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+	</div>
+
+	<div style="display: flex;justify-content: space-evenly;">
+			<center><img alt="Только объект:" src="{% static crop_image %}" ></center>
+			<div style="display: flex;flex-direction: column;align-items: flex-start;justify-content: space-evenly;">
+			<center><table class="table table-bordered " border="1">
+				<tr>
+					<th width="80">Фрукт</th>
+					<th>Предсказание</th>
+				</tr>
+				{% for i, n in fruit_predictions %}
+					<tr>
+						<td>{{i}}</td>
+						<td>{{n}}</td>
+					</tr>
+				{% endfor %}</table></center>
+
+			<center><table class="table table-bordered " border="1">
+				<tr>
+					<th width="80">Свежесть</th>
+					<th>Предсказание</th>
+				</tr>
+				{% for i, n in freshness_predictions %}
+					<tr>
+						<td>{{i}}</td>
+						<td>{{n}}</td>
+					</tr>
+				{% endfor %}</table></center>
+
+		{% endif %}
+			</div>
+	</div>
+
 		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-		<center><img alt="Только объект:" src="{% static crop_image %}" ></center>
-
-		<center><table class="table table-bordered " border="1">
-			<tr>
-				<th>Фрукт</th>
-				<th>Предсказание</th>
-			</tr>
-			{% for i, n in fruit_predictions %}
-				<tr>
-					<td>{{i}}</td>
-					<td>{{n}}</td>
-				</tr>
-			{% endfor %}</table></center>
-	
-		<center><table class="table table-bordered " border="1">
-			<tr>
-				<th>Свежесть</th>
-				<th>Предсказание</th>
-			</tr>
-			{% for i, n in freshness_predictions %}
-				<tr>
-					<td>{{i}}</td>
-					<td>{{n}}</td>
-				</tr>
-			{% endfor %}</table></center>
-
-
-
-	{% endif %}
-
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+		<p style="font-size: 1.5em; text-align: center;"> width: {{width_edit}} height: {{height_edit}} </p>
 
 </body>
 </html>
