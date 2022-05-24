@@ -1,18 +1,44 @@
+<<<<<<< Updated upstream
+from distutils.command.upload import upload
+=======
+from tkinter import N
+>>>>>>> Stashed changes
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.core.files.storage import default_storage
 import cv2
-import os
-from fruitpred.settings import BASE_DIR
-from . import predict as pr
-from django.views.decorators.csrf import csrf_protect
-import numpy as np
 
+<<<<<<< Updated upstream
+=======
 supported_formats = ["png", "jpg"]
-pr.loadmodels(0)
+pr.loadmodels()
 
 @csrf_protect
+>>>>>>> Stashed changes
 def index(request):
+    # print(request.FILES)
+    # print(request.FILES['photo'])
+    if request.method == 'POST':
+        # print(request.FILES['photo'])
+        # print(request.FILES['photo'].read())
+        # print(dir(request.FILES['photo']))
+        with open("apple_saved.jpg", "wb") as f:
+            f.write(request.FILES['photo'].read())
+            f.close()
+        # with default_storage.open("tmp/apple_saved.jpg", 'wb') as destination:
+            # for chunk in request.FILES['photo'].chunks():
+                # destination.write(chunk)
+        path = "apple_saved.jpg"
+        cv2.imread(path)
 
+
+
+    return render(request, "index.html")
+
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+def predict(request):
+=======
     if request.method == 'POST':
 
         if bool(request.FILES) == False:
@@ -44,26 +70,43 @@ def index(request):
 
         image = pr.Predfruitfreshness(os.path.join(IMAGES_DIR, "image_saved.jpg"))
 
-        image_with_detection, crop_image = image.odpred()
+        image_with_detections, crop_images = image.odpred()
 
-        if (image_with_detection == "None") and (crop_image == "None"):
+        if (image_with_detections == "None") and (crop_images == "None"):
             data = {"image": "NotFound"}
             return render(request, "index.html", context=data)
+        
+        n = 0
+        IMAGE_W_DETECT_DIRs = list()
+        for image_w_detection in image_with_detections:
+            n += 1
+            IMAGE_W_DETECT_DIR = os.path.join(IMAGES_DIR, f"image_w_detect_saved{n}.jpg")
+            IMAGE_W_DETECT_DIRs.append(IMAGE_W_DETECT_DIR)
+            cv2.imwrite(IMAGE_W_DETECT_DIR, image_w_detection)
 
-        IMAGE_W_DETECT_DIR = os.path.join(IMAGES_DIR, "image_w_detect_saved.jpg")
-        cv2.imwrite(IMAGE_W_DETECT_DIR, image_with_detection)
+        n = 0
+        IMAGE_CROP_DIRs = list()
+        for crop_image in crop_images:
+            n += 1
+            IMAGE_CROP_DIR = os.path.join(IMAGES_DIR, f"image_crop_saved{n}.jpg")
+            IMAGE_CROP_DIRs.append(IMAGE_CROP_DIR)
+            cv2.imwrite(IMAGE_CROP_DIR, crop_image[0])
 
-        IMAGE_CROP_DIR = os.path.join(IMAGES_DIR, "image_crop_saved.jpg")
-        cv2.imwrite(IMAGE_CROP_DIR, crop_image[0])
+        fruit_predictions = list()
+        freshness_predictions = list()
+        for crop_image in crop_images:
+            fruit_prediction = pr.Predfruitfreshness.predfruit(crop_image)
+            fruit_predictions.append(max(fruit_prediction.items()))
 
-        fruit_predictions = pr.Predfruitfreshness.predfruit(crop_image)
-        freshness_predictions = pr.Predfruitfreshness.predfreshness(crop_image)
+            freshness_prediction = pr.Predfruitfreshness.predfreshness(crop_image)
+            freshness_predictions.append(max(freshness_prediction.items()))
+
+
             
-        height, width, color = image_with_detection.shape #reverse?
+        height, width, color = image_with_detections[0].shape #reverse?
         #print(width)
         #print(height)
         k = round(width / height, 4)
-        print(k)
         #height = image_with_detection.shape()[1]
 
         if k > 1.15:
@@ -75,12 +118,17 @@ def index(request):
         if (k >= 0.9) and (k <= 1.15):
             width_edit, height_edit = 400, 400
 
+        images_detections_and_crops = zip(IMAGE_W_DETECT_DIRs, IMAGE_CROP_DIRs)
+
+        predictions = zip(fruit_predictions, freshness_predictions)
 
         data = {"image": os.path.join(IMAGES_DIR, "image_saved.jpg"), 
-        "image_with_detection": IMAGE_W_DETECT_DIR, 
-        "crop_image": IMAGE_CROP_DIR, 
-        "fruit_predictions": fruit_predictions.items(), 
-        "freshness_predictions": freshness_predictions.items(),
+        #"image_with_detections": IMAGE_W_DETECT_DIRs, 
+        #"crop_images": IMAGE_CROP_DIRs, 
+        #"fruit_predictions": fruit_predictions, 
+        #"freshness_predictions": freshness_predictions,
+        "images_detections_and_crops": images_detections_and_crops,
+        "predictions": predictions,
         "width_edit": width_edit,
         "height_edit": height_edit}
 
@@ -96,6 +144,11 @@ def index(request):
 
 
 def result(request):
+>>>>>>> Stashed changes
+=======
+
+def result(request):
+>>>>>>> 889f3f007aec898fe2cd8c5d120d3ace75f66ba5
     output = "<h2>Предсказать</h2>"
     return HttpResponse(output)
 

@@ -1,27 +1,31 @@
 <!DOCTYPE html>
-{% load static %}
 <html>
 <head>
     <meta charset="utf-8" />
-	<link rel="stylesheet" href="{% static "css/styles.css" %}" />
     <title>Прогнозирование</title>
-
-	<style>
-	   .layer1 {
-		position: relative; /* Относительное позиционирование */
-		background: #f0f0f0; /* Цвет фона */
-		height: 200px; /* Высота блока */
-	   }
-	   .layer2 {
-		position: absolute; /* Абсолютное позиционирование */
-		bottom: 15px; /* Положение от нижнего края */
-		right: 15px; /* Положение от правого края */
-		line-height: 1px;
-	   }
-  </style>
-
 </head>
 <body>
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+=======
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+>>>>>>> 889f3f007aec898fe2cd8c5d120d3ace75f66ba5
+	<h2 style="text-align: center;">Прогнозирование свежести фрукта по фотографии</h2>
+	{% block content %}
+		<p style="font-size: 1.5em; text-align: center;">Вставьте изображение</p>
+		<form enctype="multipart/form-data" method="post">
+			{% csrf_token %}
+			<p style="font-size: 1.5em; text-align: center;"><input type="file" name="photo"></p>
+			<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+			<p style="font-size: 1.5em; text-align: center;"><input type="submit" value="Предсказать"></p>
+		</form>
+	{% endblock %}
+<<<<<<< HEAD
+=======
 	<div>
 		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
 
@@ -46,45 +50,28 @@
 
 	<div style="display: flex;flex-wrap: nowrap;justify-content: center;">
 		{% if image != "None" and image != "False" and image != "NotFound" %}
-			<center><img alt="Загруженная фотография:" src="{% static image %}" width={{width_edit}} height={{height_edit}}></center>
-			<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-			<center><img alt="Нахождение объектов:" src="{% static image_with_detection %}" width={{width_edit}} height={{height_edit}}></center>
-			<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-	</div>
-
-	<div style="display: flex;justify-content: space-evenly;">
-			<center><img alt="Только объект:" src="{% static crop_image %}" ></center>
-			<div style="display: flex;flex-direction: column;align-items: flex-start;justify-content: space-evenly;">
-			<center><table class="table table-bordered " border="1">
-				<tr>
-					<th width="80">Фрукт</th>
-					<th>Предсказание</th>
-				</tr>
-				{% for i, n in fruit_predictions %}
-					<tr>
-						<td>{{i}}</td>
-						<td>{{n}}</td>
-					</tr>
-				{% endfor %}</table></center>
-
-			<center><table class="table table-bordered " border="1">
-				<tr>
-					<th width="80">Свежесть</th>
-					<th>Предсказание</th>
-				</tr>
-				{% for i, n in freshness_predictions %}
-					<tr>
-						<td>{{i}}</td>
-						<td>{{n}}</td>
-					</tr>
-				{% endfor %}</table></center>
-
+			{% for image_with_detection, crop_image in images_detections_and_crops %}
+				<div>
+					<center><img alt="Нахождение объектов:" src="{% static image_with_detection %}" width={{width_edit}} height={{height_edit}}></center>
+					<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
+					<center><img alt="Только объект:" src="{% static crop_image %}" ></center>
+					{% for fruit_prediction, freshness_prediction in predictions %}
+						<p style="font-size: 1.5em; text-align: center;">{{fruit_prediction.0}}</p>
+						<p style="font-size: 1.5em; text-align: center;">{{freshness_prediction.0}}</p>
+					{% endfor %}
+				</div>
+			{% endfor %}
 		{% endif %}
-			</div>
 	</div>
 
 		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
 		<p style="font-size: 1.5em; text-align: center;"> width: {{width_edit}} height: {{height_edit}} </p>
+>>>>>>> Stashed changes
+=======
+	<img style="width: 256px; height: 256px;"
+	alt="Image description"
+ 	src="{% static 'apple_saved.jpg' %}"/>
+>>>>>>> 889f3f007aec898fe2cd8c5d120d3ace75f66ba5
 
 </body>
 </html>
