@@ -1,31 +1,13 @@
 <!DOCTYPE html>
+{% load static %}
+{% load define_action %}
 <html>
 <head>
     <meta charset="utf-8" />
     <title>Прогнозирование</title>
 </head>
 <body>
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-	<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
->>>>>>> 889f3f007aec898fe2cd8c5d120d3ace75f66ba5
-	<h2 style="text-align: center;">Прогнозирование свежести фрукта по фотографии</h2>
-	{% block content %}
-		<p style="font-size: 1.5em; text-align: center;">Вставьте изображение</p>
-		<form enctype="multipart/form-data" method="post">
-			{% csrf_token %}
-			<p style="font-size: 1.5em; text-align: center;"><input type="file" name="photo"></p>
-			<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-			<p style="font-size: 1.5em; text-align: center;"><input type="submit" value="Предсказать"></p>
-		</form>
-	{% endblock %}
-<<<<<<< HEAD
-=======
+
 	<div>
 		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
 
@@ -50,28 +32,23 @@
 
 	<div style="display: flex;flex-wrap: nowrap;justify-content: center;">
 		{% if image != "None" and image != "False" and image != "NotFound" %}
-			{% for image_with_detection, crop_image in images_detections_and_crops %}
+			{% define 0 as counter %}
+			{% for fruit_prediction, freshness_prediction, image_with_detection, crop_image in predictions %}
 				<div>
 					<center><img alt="Нахождение объектов:" src="{% static image_with_detection %}" width={{width_edit}} height={{height_edit}}></center>
 					<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-					<center><img alt="Только объект:" src="{% static crop_image %}" ></center>
-					{% for fruit_prediction, freshness_prediction in predictions %}
-						<p style="font-size: 1.5em; text-align: center;">{{fruit_prediction.0}}</p>
-						<p style="font-size: 1.5em; text-align: center;">{{freshness_prediction.0}}</p>
-					{% endfor %}
+					<center><img alt="Только объект:" src="{% static crop_image %}"></center>
+					<p style="font-size: 1.5em; text-align: center;">{{fruit_prediction.0}}</p>
+					<p style="font-size: 1.5em; text-align: center;">{{freshness_prediction.0}}</p>
+
 				</div>
+			{% define counter|add:1 as counter %}
 			{% endfor %}
 		{% endif %}
 	</div>
 
 		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
 		<p style="font-size: 1.5em; text-align: center;"> width: {{width_edit}} height: {{height_edit}} </p>
->>>>>>> Stashed changes
-=======
-	<img style="width: 256px; height: 256px;"
-	alt="Image description"
- 	src="{% static 'apple_saved.jpg' %}"/>
->>>>>>> 889f3f007aec898fe2cd8c5d120d3ace75f66ba5
 
 </body>
 </html>

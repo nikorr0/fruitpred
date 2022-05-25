@@ -223,20 +223,25 @@ class Predfruitfreshness:
       w = int(round(wid, 0)) #xmax - xmin
       h = abs(int(round(heig, 0))) #ymax - ymin
 
-      xmax = num_obj[i][2][2] * width
-      ymax = num_obj[i][2][3] * height
+      xmin = int(round(xmin, 0))
+      ymin = int(round(ymin, 0))
+      xmax = int(round((num_obj[i][2][2] * width), 0))
+      ymax = int(round((num_obj[i][2][3] * height), 0))
 
       crop_img = cv2.cvtColor(img[x:x+w, y:y+h], cv2.COLOR_BGR2RGB)
       crop_img = cv2.resize(crop_img, (256, 256)) #/ 255
       crop_img = np.array([crop_img])
       crop_imgs.append(crop_img)
 
-      image_w_one_detect = Image.open(self.img_path)
-      image_w_one_detect_copy = ImageDraw.Draw(image_w_one_detect)
-      for n in range(10):
-        image_w_one_detect_copy.rectangle([xmin+n, ymin+n, xmax-n, ymax-n], outline = 'black') #неправильно рисует, добавляется только одно изображение с детекцией (может из-за неправильно рисует)
-        
-      image_w_detects.append(np.array(image_w_one_detect))
+      # image_w_one_detect = Image.open(self.img_path)
+      # image_w_one_detect_copy = ImageDraw.Draw(image_w_one_detect)
+      image_w_one_detect = img.copy()
+      # for n in range(10):
+        # image_w_one_detect_copy.rectangle([xmin+n, ymin+n, xmax-n, ymax-n], outline = 'black') #неправильно рисует, добавляется только одно изображение с детекцией (может из-за неправильно рисует)
+      cv2.rectangle(image_w_one_detect,(ymax,xmin),(ymin,xmax),(0,0,0),3)
+      image_w_one_detect = cv2.cvtColor(image_w_one_detect, cv2.COLOR_BGR2RGB)
+
+      image_w_detects.append(image_w_one_detect)
 
 
     return image_w_detects, crop_imgs
@@ -255,24 +260,24 @@ class Predfruitfreshness:
     prediction_fruit = dict()
 
     if lever == 0:
-      prediction_fruit["apple"] = "0 %"
-      prediction_fruit["orange"] = "0 %"
-      prediction_fruit["banana"] = "0 %"
+      prediction_fruit["apple"] = 0 #"0 %"
+      prediction_fruit["orange"] = 0 #"0 %"
+      prediction_fruit["banana"] = 0 #"0 %"
       return prediction_fruit
 
-    prediction_fruit[f"{fruits_lang[0]}"] = f"{round(modelConcat.predict(crop_img)[0][0]*100, 1)} %"
-    prediction_fruit[f"{fruits_lang[1]}"] = f"{round(modelConcat.predict(crop_img)[0][1]*100, 1)} %"
-    prediction_fruit[f"{fruits_lang[2]}"] = f"{round(modelConcat.predict(crop_img)[0][2]*100, 1)} %"
+    prediction_fruit[f"{fruits_lang[0]}"] = round(modelConcat.predict(crop_img)[0][0]*100, 1) #f"{round(modelConcat.predict(crop_img)[0][0]*100, 1)} %"
+    prediction_fruit[f"{fruits_lang[1]}"] = round(modelConcat.predict(crop_img)[0][1]*100, 1) #f"{round(modelConcat.predict(crop_img)[0][1]*100, 1)} %"
+    prediction_fruit[f"{fruits_lang[2]}"] = round(modelConcat.predict(crop_img)[0][2]*100, 1) #f"{round(modelConcat.predict(crop_img)[0][2]*100, 1)} %"
     return prediction_fruit
 
   def predfreshness(crop_img):
     prediction_freshness = dict()
 
     if lever == 0:
-      prediction_freshness["fresh"] = "0 %"
-      prediction_freshness["stale"] = "0 %"
+      prediction_freshness["fresh"] = 0 #"0 %"
+      prediction_freshness["stale"] = 0 #"0 %"
       return prediction_freshness
 
-    prediction_freshness[f"{freshness_lang[0]}"] = f"{round(modelLayers.predict(crop_img)[0][0]*100, 1)} %"
-    prediction_freshness[f"{freshness_lang[1]}"] = f"{round(modelLayers.predict(crop_img)[0][1]*100, 1)} %"
+    prediction_freshness[f"{freshness_lang[0]}"] = round(modelLayers.predict(crop_img)[0][0]*100, 1) #f"{round(modelLayers.predict(crop_img)[0][0]*100, 1)} %"
+    prediction_freshness[f"{freshness_lang[1]}"] = round(modelLayers.predict(crop_img)[0][1]*100, 1) #f"{round(modelLayers.predict(crop_img)[0][1]*100, 1)} %"
     return prediction_freshness
