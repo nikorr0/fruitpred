@@ -3,6 +3,8 @@
 # from tensorflow.keras.utils import plot_model, to_categorical
 # from tensorflow.keras.callbacks import LambdaCallback
 # from tensorflow.keras import utils
+import itertools
+
 from PIL import Image, ImageDraw #, ImageFont
 # from xml.etree import ElementTree as et
 from tensorflow import keras
@@ -194,10 +196,10 @@ class Predfruitfreshness:
     height = img.shape[1]
 
     # num_obj = list()
-    num_obj = list(filter(lambda x: (x[1] > 0.5) and ((x[0] == 53) or (x[0] == 52) or (x[0] == 55)),
+    num_obj = list(filter(lambda x: (x[1] > 0.35) and ((x[0] == 53) or (x[0] == 52) or (x[0] == 55)),
                           list(zip(detections['detection_classes'],
                                    detections['detection_scores'],
-                                   detections['detection_boxes'], [i for i in range(100)]))))
+                                   detections['detection_boxes'], itertools.count())))) #[i for i in range(100)]))))
     print("NUM_OBJ", len(num_obj))
     # for i in range(10):
     #   n = detections['detection_classes'][i]
@@ -209,9 +211,52 @@ class Predfruitfreshness:
       return num_obj, num_obj
 
     # i = num_obj
+    def IOU(box1, box2):
+      """ We assume that the box follows the format:
+          box1 = [x1,y1,x2,y2], and box2 = [x3,y3,x4,y4],
+          where (x1,y1) and (x3,y3) represent the top left coordinate,
+          and (x2,y2) and (x4,y4) represent the bottom right coordinate """
+      x1, y1, x2, y2 = box1
+      x3, y3, x4, y4 = box2
+      x_inter1 = max(x1, x3)
+      y_inter1 = max(y1, y3)
+      x_inter2 = min(x2, x4)
+      y_inter2 = min(y2, y4)
+      width_inter = abs(x_inter2 - x_inter1)
+      height_inter = abs(y_inter2 - y_inter1)
+      area_inter = width_inter * height_inter
+      width_box1 = abs(x2 - x1)
+      height_box1 = abs(y2 - y1)
+      width_box2 = abs(x4 - x3)
+      height_box2 = abs(y4 - y3)
+      area_box1 = width_box1 * height_box1
+      area_box2 = width_box2 * height_box2
+      area_union = area_box1 + area_box2 - area_inter
+      iou = round(area_inter / area_union, 3)
+      return iou
+
+    dif_coords = list()
+    dif_coords.append(0)
+    #for i in range(len(num_obj), -1, -1):
+      #for n in range(i + 1, len(num_obj)):
+    for i in range(len(num_obj)-1, -1, -1):
+      for n in range(i-1, len(num_obj)-(len(num_obj)+1), -1):
+        print("i", i)
+        print("n", n)
+        print("IOU", IOU(num_obj[i][2], num_obj[n][2]))
+        if IOU(num_obj[i][2], num_obj[n][2]) >= 0.35:
+          break
+        else:
+          if (num_obj[i][1] >= num_obj[n][1]) and (not(i in dif_coords)):
+            dif_coords.append(i)
+          if (num_obj[i][1] < num_obj[n][1]) and (not(n in dif_coords)):
+            dif_coords.append(n)
+
+
+
     crop_imgs = list()
     image_w_detects = list()
-    for i in range(len(num_obj)):
+    for i in dif_coords: #range(len(num_obj)):
 
       xmin = num_obj[i][2][0] * width # detections['detection_boxes'][num_obj[0]][0] * width
       ymin = num_obj[i][2][1] * height # detections['detection_boxes'][num_obj[0]][1] * height
