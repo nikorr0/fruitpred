@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 {% load static %}
-{% load define_action %}
+
+{% load django_bootstrap5 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 <html>
 <head>
     <meta charset="utf-8" />
     <title>Прогнозирование</title>
 </head>
 <body>
+
+
 
 	<div>
 		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
@@ -30,19 +36,21 @@
 		{% endblock %}
 	</div>
 
-	<div style="display: flex;flex-wrap: nowrap;justify-content: center;">
+	<div style="display: flex;flex-wrap: nowrap;justify-content: center; margin-left: 15%;margin-right: 15%;">
 		{% if image != "None" and image != "False" and image != "NotFound" %}
-			{% define 0 as counter %}
-			{% for fruit_prediction, freshness_prediction, image_with_detection, crop_image in predictions %}
-				<div>
-					<center><img alt="Нахождение объектов:" src="{% static image_with_detection %}" width={{width_edit}} height={{height_edit}}></center>
-					<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-					<center><img alt="Только объект:" src="{% static crop_image %}"></center>
-					<p style="font-size: 1.5em; text-align: center;">{{fruit_prediction.0}}</p>
-					<p style="font-size: 1.5em; text-align: center;">{{freshness_prediction.0}}</p>
 
+			{% for fruit_prediction, freshness_prediction, image_with_detection, crop_image in predictions %}
+
+				<div class="card" style="width: 18rem;">
+				  <img src="{% static image_with_detection %}" class="card-img-top" alt="Image">
+				  <div class="card-body">
+					<h5 class="card-title">{{fruit_prediction.0}}</h5>
+					<p class="card-text">{{freshness_prediction.0}}</p>
+					<a href="#" class="btn btn-primary">Go somewhere</a>
+				  </div>
 				</div>
-			{% define counter|add:1 as counter %}
+
+
 			{% endfor %}
 		{% endif %}
 	</div>
