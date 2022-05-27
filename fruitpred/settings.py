@@ -15,14 +15,14 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-# STATIC_URL = '/fruitpred/'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'insert key here'
- 
+SECRET_KEY = 'django-insecure-nju)28z=qee)$+9c8*z7%&=nh-a8sz$7+a7)1l(+%l5p=yves@' #'insert key here'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_bootstrap5',
     'firstapp'
 ]
 
