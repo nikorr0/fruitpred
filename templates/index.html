@@ -26,7 +26,7 @@
 				<p style="font-size: 1.5em; text-align: center;"><input type="submit" value="Предсказать"></p>
 			</form>
 			{% if image == "False" %}
-				<p style="font-size: 1.5em; text-align: center;">Ошибка, вставьте корректное изображение.</p>
+				<p style="font-size: 1.5em; text-align: center;">Ошибка, вставьте корректное изображение. Поддерживаемые форматы: png, jpg.</p>
 			{% endif %}
 
 			{% if image == "NotFound" %}
@@ -36,17 +36,15 @@
 		{% endblock %}
 	</div>
 
-	<div style="display: flex;flex-wrap: nowrap;justify-content: center; margin-left: 15%;margin-right: 15%;">
+	<div style="display: flex;flex-wrap: wrap;justify-content: center; margin-left: 15%; margin-right: 15% ;">
 		{% if image != "None" and image != "False" and image != "NotFound" %}
 
 			{% for fruit_prediction, freshness_prediction, image_with_detection, crop_image in predictions %}
 
-				<div class="card" style="width: 18rem;">
+				<div class="card" style="width: 18rem; margin: 15px;">
 				  <img src="{% static image_with_detection %}" class="card-img-top" alt="Image">
 				  <div class="card-body">
-					<h5 class="card-title">{{fruit_prediction.0}}</h5>
-					<p class="card-text">{{freshness_prediction.0}}</p>
-					<a href="#" class="btn btn-primary">Go somewhere</a>
+					<h5 class="card-title">Фрукт: {{fruit_prediction.0}}<br>Свежесть: {{freshness_prediction.0}}</h5>
 				  </div>
 				</div>
 
@@ -56,7 +54,7 @@
 	</div>
 
 		<p style="font-size: 1.5em; text-align: center;">&nbsp;</p>
-		<p style="font-size: 1.5em; text-align: center;"> width: {{width_edit}} height: {{height_edit}} </p>
+
 
 </body>
 </html>

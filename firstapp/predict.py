@@ -235,46 +235,135 @@ class Predfruitfreshness:
       iou = round(area_inter / area_union, 3)
       return iou
 
-    dif_coords = list()
-    dif_coords.append(0)
-    #for i in range(len(num_obj), -1, -1):
-      #for n in range(i + 1, len(num_obj)):
-    for i in range(len(num_obj)-1, -1, -1):
-      for n in range(i-1, len(num_obj)-(len(num_obj)+1), -1):
-        print("i", i)
-        print("n", n)
-        print("IOU", IOU(num_obj[i][2], num_obj[n][2]))
-        if IOU(num_obj[i][2], num_obj[n][2]) >= 0.35:
-          break
-        else:
-          if (num_obj[i][1] >= num_obj[n][1]) and (not(i in dif_coords)):
-            dif_coords.append(i)
-          if (num_obj[i][1] < num_obj[n][1]) and (not(n in dif_coords)):
-            dif_coords.append(n)
+
+    # dif_coords.append(0)
+    # #for i in range(len(num_obj), -1, -1):
+    #   #for n in range(i + 1, len(num_obj)):
+    # for i in range(len(num_obj)-1, -1, -1):
+    #   for n in range(i-1, len(num_obj)-(len(num_obj)+1), -1):
+    #     print("i", i)
+    #     print("n", n)
+    #     print("IOU", IOU(num_obj[i][2], num_obj[n][2]))
+    #     if IOU(num_obj[i][2], num_obj[n][2]) >= 0.35:
+    #       break
+    #     else:
+    #       if (not(i in dif_coords)):
+    #         dif_coords.append(i)
+    #       if (not(n in dif_coords)):
+    #         dif_coords.append(n)
+
+    # dif_coords_properties = list()
+    # nums_for_repeat = list()
+    # for i in range(len(num_obj)):
+    #   for n in range(i + 1, len(num_obj)):
+    #     #iou = IOU(num_obj[i][2], num_obj[n][2])
+    #
+    #     if (not(i in nums_for_repeat)):
+    #       dif_coords_properties.append((i, num_obj[i][2], num_obj[i][0], num_obj[i][1])) # id, boxes, class, score
+    #     if (not(n in nums_for_repeat)):
+    #       dif_coords_properties.append((n, num_obj[n][2], num_obj[n][0], num_obj[n][1]))
+    #
+    #     if (not(i in nums_for_repeat)):
+    #       nums_for_repeat.append(i)
+    #     if (not(n in nums_for_repeat)):
+    #       nums_for_repeat.append(n)
+
+    dif_coords = set()
+    deleted_coords = set()
+
+    for i in range(len(num_obj)):
+      for n in range(i + 1, len(num_obj)):
+        iou = IOU(num_obj[i][2], num_obj[n][2])
+        if iou >= 0.4:
+          if iou <= 1:
+            if num_obj[i][1] >= num_obj[n][1]:
+              deleted_coords.add(n)
+            else:
+              deleted_coords.add(i)
+
+    for i in range(len(num_obj)):
+      if not (i in deleted_coords):
+        dif_coords.add(i)
+
+
+    if len(dif_coords) == 0:
+      dif_coords.add(0)
+
+    print(num_obj)
+
+
+    # for i in range(len(dif_coords_properties)):
+    #   for n in range(i + 1, len(dif_coords_properties)):
+    #     if IOU(dif_coords_properties[i][1], dif_coords_properties[n][1]) >= 0.35:
+    #       if dif_coords_properties[i][2] == dif_coords_properties[n][2]:
+    #         if (dif_coords_properties[i][3] >= dif_coords_properties[n][3]) and (dif_coords_properties[n][0] in dif_coords):
+    #           dif_coords.remove(dif_coords_properties[n][0])
+    #         if (dif_coords_properties[i][3] < dif_coords_properties[n][3]) and (dif_coords_properties[i][0] in dif_coords):
+    #           dif_coords.remove(dif_coords_properties[i][0])
+
+    # dif_coords.append(0)
 
 
 
     crop_imgs = list()
     image_w_detects = list()
     for i in dif_coords: #range(len(num_obj)):
+      try:
+        xmin = num_obj[i][2][0] * width # detections['detection_boxes'][num_obj[0]][0] * width
+        ymin = num_obj[i][2][1] * height # detections['detection_boxes'][num_obj[0]][1] * height
+        wid = (num_obj[i][2][2] * width) - (num_obj[i][2][0] * width) # (detections['detection_boxes'][num_obj[0]][2] * width) - (detections['detection_boxes'][num_obj[0]][0] * width)
+        heig = (num_obj[i][2][3] * height) - (num_obj[i][2][1] * height) # (detections['detection_boxes'][num_obj[0]][3] * height) - (detections['detection_boxes'][num_obj[0]][1] * height)
 
-      xmin = num_obj[i][2][0] * width # detections['detection_boxes'][num_obj[0]][0] * width
-      ymin = num_obj[i][2][1] * height # detections['detection_boxes'][num_obj[0]][1] * height
-      wid = (num_obj[i][2][2] * width) - (num_obj[i][2][0] * width) # (detections['detection_boxes'][num_obj[0]][2] * width) - (detections['detection_boxes'][num_obj[0]][0] * width)
-      heig = (num_obj[i][2][3] * height) - (num_obj[i][2][1] * height) # (detections['detection_boxes'][num_obj[0]][3] * height) - (detections['detection_boxes'][num_obj[0]][1] * height)
+        x = int(round(xmin, 0)) #xmin
+        y = int(round(ymin, 0)) #ymin
+        w = int(round(wid, 0)) #xmax - xmin
+        h = abs(int(round(heig, 0))) #ymax - ymin
 
-      x = int(round(xmin, 0)) #xmin
-      y = int(round(ymin, 0)) #ymin
-      w = int(round(wid, 0)) #xmax - xmin
-      h = abs(int(round(heig, 0))) #ymax - ymin
+        xmin = int(round(xmin, 0))
+        ymin = int(round(ymin, 0))
+        xmax = int(round((num_obj[i][2][2] * width), 0))
+        ymax = int(round((num_obj[i][2][3] * height), 0))
+
+        crop_img = cv2.cvtColor(img[x:x+w, y:y+h], cv2.COLOR_BGR2RGB)
+        crop_img = cv2.resize(crop_img, (256, 256)) #/ 255
+        crop_img = np.array([crop_img])
+        crop_imgs.append(crop_img)
+
+        # image_w_one_detect = Image.open(self.img_path)
+        # image_w_one_detect_copy = ImageDraw.Draw(image_w_one_detect)
+        image_w_one_detect = img.copy()
+        # for n in range(10):
+          # image_w_one_detect_copy.rectangle([xmin+n, ymin+n, xmax-n, ymax-n], outline = 'black') #неправильно рисует, добавляется только одно изображение с детекцией (может из-за неправильно рисует)
+        cv2.rectangle(image_w_one_detect,(ymax,xmin),(ymin,xmax),(0,0,0), 4)
+        image_w_one_detect = cv2.cvtColor(image_w_one_detect, cv2.COLOR_BGR2RGB)
+
+        image_w_detects.append(image_w_one_detect)
+      except:
+        continue
+
+
+
+    if len(image_w_detects) == 0:
+      for i in range(len(num_obj)-1, -1, -1):
+        digit_obj = num_obj[i][3]
+      num_obj = detections['detection_boxes'][digit_obj]
+      xmin = num_obj[0] * width  # detections['detection_boxes'][num_obj[0]][0] * width
+      ymin = num_obj[1] * height  # detections['detection_boxes'][num_obj[0]][1] * height
+      wid = (num_obj[2] * width) - (num_obj[0] * width)  # (detections['detection_boxes'][num_obj[0]][2] * width) - (detections['detection_boxes'][num_obj[0]][0] * width)
+      heig = (num_obj[3] * height) - (num_obj[1] * height)  # (detections['detection_boxes'][num_obj[0]][3] * height) - (detections['detection_boxes'][num_obj[0]][1] * height)
+
+      x = int(round(xmin, 0))  # xmin
+      y = int(round(ymin, 0))  # ymin
+      w = int(round(wid, 0))  # xmax - xmin
+      h = abs(int(round(heig, 0)))  # ymax - ymin
 
       xmin = int(round(xmin, 0))
       ymin = int(round(ymin, 0))
-      xmax = int(round((num_obj[i][2][2] * width), 0))
-      ymax = int(round((num_obj[i][2][3] * height), 0))
+      xmax = int(round((num_obj[2] * width), 0))
+      ymax = int(round((num_obj[3] * height), 0))
 
-      crop_img = cv2.cvtColor(img[x:x+w, y:y+h], cv2.COLOR_BGR2RGB)
-      crop_img = cv2.resize(crop_img, (256, 256)) #/ 255
+      crop_img = cv2.cvtColor(img[x:x + w, y:y + h], cv2.COLOR_BGR2RGB)
+      crop_img = cv2.resize(crop_img, (256, 256))  # / 255
       crop_img = np.array([crop_img])
       crop_imgs.append(crop_img)
 
@@ -282,12 +371,11 @@ class Predfruitfreshness:
       # image_w_one_detect_copy = ImageDraw.Draw(image_w_one_detect)
       image_w_one_detect = img.copy()
       # for n in range(10):
-        # image_w_one_detect_copy.rectangle([xmin+n, ymin+n, xmax-n, ymax-n], outline = 'black') #неправильно рисует, добавляется только одно изображение с детекцией (может из-за неправильно рисует)
-      cv2.rectangle(image_w_one_detect,(ymax,xmin),(ymin,xmax),(0,0,0),3)
+      # image_w_one_detect_copy.rectangle([xmin+n, ymin+n, xmax-n, ymax-n], outline = 'black') #неправильно рисует, добавляется только одно изображение с детекцией (может из-за неправильно рисует)
+      cv2.rectangle(image_w_one_detect, (ymax, xmin), (ymin, xmax), (0, 0, 0), 4)
       image_w_one_detect = cv2.cvtColor(image_w_one_detect, cv2.COLOR_BGR2RGB)
 
       image_w_detects.append(image_w_one_detect)
-
 
     return image_w_detects, crop_imgs
 

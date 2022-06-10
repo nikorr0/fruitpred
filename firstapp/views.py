@@ -76,29 +76,28 @@ def index(request):
 
             fruit_prediction = pr.Predfruitfreshness.predfruit(crop_image)
             fruit_predictions.append(max(fruit_prediction.items(), key=operator.itemgetter(1)))
-            print("Fruitmax: ", max(fruit_prediction.items(), key=operator.itemgetter(1)))
+            #print("Fruitmax: ", max(fruit_prediction.items(), key=operator.itemgetter(1)))
 
             freshness_prediction = pr.Predfruitfreshness.predfreshness(crop_image)
             freshness_predictions.append(max(freshness_prediction.items(), key=operator.itemgetter(1)))
-            print("Fresnessmax: ", max(freshness_prediction.items(), key=operator.itemgetter(1)))
+            #print("Fresnessmax: ", max(freshness_prediction.items(), key=operator.itemgetter(1)))
 
 
 
             
-        height, width, color = image_with_detections[0].shape #reverse?
-        #print(width)
-        #print(height)
-        k = round(width / height, 4)
-        #height = image_with_detection.shape()[1]
-
-        if k > 1.15:
-            width_edit, height_edit = 640, 360
-
-        if k < 0.9:
-            width_edit, height_edit = 256, 410
-        
-        if (k >= 0.9) and (k <= 1.15):
-            width_edit, height_edit = 400, 400
+        # height, width, color = image_with_detections[0].shape #reverse?
+        #
+        # k = round(width / height, 4)
+        #
+        #
+        # if k > 1.15:
+        #     width_edit, height_edit = 640, 360
+        #
+        # if k < 0.9:
+        #     width_edit, height_edit = 256, 410
+        #
+        # if (k >= 0.9) and (k <= 1.15):
+        #     width_edit, height_edit = 400, 400
 
         # images_detections_and_crops = zip(IMAGE_W_DETECT_DIRs, IMAGE_CROP_DIRs)
 
@@ -110,9 +109,9 @@ def index(request):
         # "fruit_predictions": fruit_predictions,
         # "freshness_predictions": freshness_predictions,
         # "images_detections_and_crops": images_detections_and_crops,
-        "predictions": predictions,
-        "width_edit": width_edit,
-        "height_edit": height_edit}
+        "predictions": predictions}
+        # "width_edit": width_edit,
+        # "height_edit": height_edit}
 
 
     else:
