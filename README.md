@@ -8,8 +8,9 @@
 
 ![](https://github.com/nikorr0/fruitpred/blob/master/screenshots/main-page.png)
 
+**Принцип работы**
 
-
+![](https://github.com/nikorr0/fruitpred/blob/master/screenshots/operating-principle1.png)
 
 **Предсказание для фрукта №1**
 
